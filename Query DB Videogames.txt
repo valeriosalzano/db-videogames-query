@@ -247,3 +247,15 @@ HAVING COUNT(*) = (
 
 13- Selezionare le categorie dei videogame i quali hanno una media recensioni inferiore a 2 (10)
 
+SELECT DISTINCT categories.name
+FROM categories
+JOIN category_videogame ON categories.id = category_videogame.category_id
+JOIN (
+	SELECT videogames.id as videogame_id
+	FROM categories
+	JOIN category_videogame ON categories.id = category_videogame.category_id
+	JOIN videogames ON category_videogame.videogame_id = videogames.id
+	JOIN reviews ON videogames.id = reviews.videogame_id
+	GROUP BY videogames.id
+	HAVING AVG(rating) <= 2
+	) y ON y.videogame_id = category_videogame.videogame_id;
